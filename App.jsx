@@ -1,6 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
-import "./styles.css";
 import TabelaProcessos from "./TabelaProcessos.jsx";
 
 function App() {
@@ -12,4 +10,4 @@ function App() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+export default App;
