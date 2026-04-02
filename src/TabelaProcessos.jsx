@@ -4,6 +4,7 @@ function TabelaProcessos() {
   const [processos, setProcessos] = useState([]);
   const [peticao, setPeticao] = useState("");
   const [mostrarPeticao, setMostrarPeticao] = useState(false);
+  const [carregando, setCarregando] = useState(false);
 
   useEffect(() => {
     setProcessos([
@@ -21,6 +22,7 @@ function TabelaProcessos() {
   }, []);
 
   const gerarPeticao = async (processo) => {
+    setCarregando(true);
     try {
       const resposta = await fetch("https://legaltech-backend.onrender.com/api/gerar-peticao", {
         method: "POST",
@@ -37,6 +39,8 @@ function TabelaProcessos() {
     } catch (err) {
       console.error(err);
       alert("Falha ao gerar petição.");
+    } finally {
+      setCarregando(false);
     }
   };
 
@@ -57,8 +61,8 @@ function TabelaProcessos() {
           </tr>
         </thead>
         <tbody>
-          {processos.map((p, i) => (
-            <tr key={i} className="hover:bg-gray-50">
+          {processos.map((p) => (
+            <tr key={p.numero_processo} className="hover:bg-gray-50">
               <td className="border px-2 py-1">{p.numero_processo}</td>
               <td className="border px-2 py-1">{p.foro}</td>
               <td className="border px-2 py-1">{p.cliente}</td>
@@ -67,8 +71,12 @@ function TabelaProcessos() {
               <td className="border px-2 py-1">{p.responsavel}</td>
               <td className="border px-2 py-1">{p.fase}</td>
               <td className="border px-2 py-1 text-center">
-                <button onClick={() => gerarPeticao(p)} className="px-2 py-0.5 bg-green-600 text-white rounded text-xs hover:bg-green-700">
-                  Gerar Petição IA
+                <button
+                  onClick={() => gerarPeticao(p)}
+                  disabled={carregando}
+                  className="px-2 py-0.5 bg-green-600 text-white rounded text-xs hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {carregando ? "Gerando..." : "Gerar Petição IA"}
                 </button>
               </td>
             </tr>
